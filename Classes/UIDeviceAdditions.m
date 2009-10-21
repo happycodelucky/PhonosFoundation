@@ -3,10 +3,11 @@
 //  PhonosFoundations
 //
 //  Created by Paul Bates on 10/17/09.
-//  Copyright 2009 __MyCompanyName__. All rights reserved.
+//  Copyright 2009 The Evil Radish Corporation. All rights reserved.
 //
 
 #import "UIDeviceAdditions.h"
+
 #import <SystemConfiguration/SystemConfiguration.h>
 #import <sys/types.h>
 #import <sys/sysctl.h>
@@ -56,7 +57,7 @@ static NSString const *kDeviceNameiPodTouch = @"iPod Touch";
 				NSLog(@"Unable to fetch the platform machine information from sysctl");
 			}
 			
-			NSAssert(_machine == nil, @"_platform not correctly set");
+			NSAssert1(_machine != nil, @"_machine in %@ was not correctly set", NSStringFromSelector(_cmd));
 		}		
 	}
 	
@@ -65,14 +66,17 @@ static NSString const *kDeviceNameiPodTouch = @"iPod Touch";
 
 - (UIDeviceType)type
 {
-	NSString *deviceName = [self name];
-	if (deviceName != nil) {
-		if ([kDeviceNameiPhone isEqualToString:deviceName])
+	NSString *_name = [self name];
+	NSAssert1(_name != nil, @"_name in %@ should never be nil", NSStringFromSelector(_cmd));
+	
+	if (_name != nil) {
+		if ([kDeviceNameiPhone isEqualToString:_name])
 			return UIDeviceTypeiPhone;
 		
-		if ([kDeviceNameiPodTouch isEqualToString:deviceName])
+		if ([kDeviceNameiPodTouch isEqualToString:_name])
 			return UIDeviceTypeiPodTouch;
 	}
+	
 	NSAssert(FALSE, @"Unable to determine device type.");
 	return UIDeviceTypeiPodTouch;
 }
